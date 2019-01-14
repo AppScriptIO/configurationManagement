@@ -1,0 +1,5 @@
+{
+    "main": "./source/configurationFileLookup.js",
+    "name": "@dependency/configuration",
+    "version": "1.0.0"
+}
