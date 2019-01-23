@@ -1,0 +1,1 @@
+- integrate `Cosmiconfig` module into the lookup algorithm.
