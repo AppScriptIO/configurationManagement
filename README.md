@@ -1,1 +1,1 @@
-# configurationManagement
+./documentation/configuration.specification.md
