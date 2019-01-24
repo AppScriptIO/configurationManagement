@@ -32,17 +32,12 @@ export function configurationFileLookup({
 
 /** Create possible absolute configuration paths */
 
-    // add base paths to possible configuration paths.
-    possibleConfigurationPath = possibleConfigurationPath.concat(configurationBasePath) 
-
     // add provided configuration path to possible configuration paths (the lookup algorithm will be executed regardless of provided configuration path).
-    if(configurationPath) { 
-        if(path.isAbsolute(configurationPath)) // absolute
-            possibleConfigurationPath.push(configurationPath)
-        else { // relative path
-            // relative to provided `configurationBasePath` base paths - paths to search from.
-            possibleConfigurationPath = possibleConfigurationPath.concat(configurationBasePath.map(basePath => path.join(basePath, configurationPath))) 
-        }
+    if(path.isAbsolute(configurationPath)) // absolute
+        possibleConfigurationPath.push(configurationPath)
+    else { // relative path
+        // relative to provided `configurationBasePath` base paths - paths to search from.
+        possibleConfigurationPath = possibleConfigurationPath.concat(configurationBasePath.map(basePath => path.join(basePath, configurationPath))) 
     }
     
     // remove duplicate paths if any

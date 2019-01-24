@@ -1,5 +1,5 @@
 {
     "main": "./source/entrypoint.js",
-    "name": "@dependency/configuration",
+    "name": "@dependency/configurationManagement",
     "version": "1.0.0"
 }
