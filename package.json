@@ -1,7 +1,13 @@
 {
-    "main": "./source/entrypoint.js",
+    "main": "./source/script.js",
     "name": "@dependency/configurationManagement",
     "version": "1.0.0",
     "dependencies": {
+    },
+    "devDependencies": {
+        "@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager",
+        "@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript",
+        "@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation"
     }
+    
 }

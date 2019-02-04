@@ -7,11 +7,11 @@
     - configurations for the source code itself, i.e. configs for the module logic. Where that can vary between projects.
 
 ## Options: 
-- **directory.application.rootPath**:
+- **directory.root**:
     _Is the path for the project's root folder._
     - type: string
     - required
-- **script.hostMachine**:
+- **script**:
     _The path to the folder container the javascript scripts._
     - type: array of objects
         - object.type == module
