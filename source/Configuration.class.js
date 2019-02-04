@@ -19,8 +19,8 @@ export class Configuration {
     }
 
     get rootPath() {
-        let rootPath = this.configuration.directory.application.rootPath
-        assert(rootPath, `❌ Configuration 'rootPath' option must be defined.`) // validate
-        return this.configuration.directory.application.rootPath
+        let rootPath = this.configuration.directory.root
+        assert(rootPath, `❌ Configuration 'root path' option must be defined.`) // validate
+        return rootPath
     }
 }
