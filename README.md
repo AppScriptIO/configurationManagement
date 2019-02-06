@@ -1,1 +1,0 @@
-./documentation/configuration.specification.md
