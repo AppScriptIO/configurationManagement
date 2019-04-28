@@ -1,5 +1,5 @@
 {
-    "main": "./source/script.js",
+    "main": "./source/entrypoint/module/transpilation.entrypoint.js",
     "name": "@dependency/configurationManagement",
     "version": "1.0.0",
     "dependencies": {},
