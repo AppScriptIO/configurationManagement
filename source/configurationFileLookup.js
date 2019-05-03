@@ -1,5 +1,7 @@
-const path = require('path'),
-  { Configuration } = require('./Configuration.class.js')
+// This module should not depend on runtime transpilation, as it is used by the javascript tranpilation module.
+import path from 'path'
+import assert from 'assert'
+import { Configuration } from './Configuration.class.js'
 
 /**
  * Find configuration file according to specific assumptions and configuration of this module with preset defaults.
@@ -106,4 +108,20 @@ function traversePath({ initialPath, stopPath = ['node_modules'] }) {
     isRootDirectory = currentPath == path.dirname(currentPath) // The logic behind checking if root directory.
   }
   return pathAccumulator
+}
+
+// retrieve the project config using array of initial paths to start from.
+// expose a specific implementation of the lookup that relies on passing starting paths to lookup from.
+export function findTargetProjectRoot({ nestedProjectPath /* Array of paths [process.cwd(), module.parent.filename] */ } = {}) {
+  let targetProjectConfig
+  for (let lookupPath of nestedProjectPath) {
+    try {
+      ;({ configuration: targetProjectConfig } = configurationFileLookup({ currentDirectory: lookupPath }))
+      break
+    } catch (error) {
+      // ignore
+    }
+  }
+  assert(targetProjectConfig, `• target project configuration file was not found from possible lookup paths.`)
+  return targetProjectConfig
 }
