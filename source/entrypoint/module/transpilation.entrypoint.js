@@ -1,6 +1,9 @@
-/* Entrypoint chain */
+const configuration = require('../../../configuration'),
+  { Compiler } = require('@dependency/javascriptTranspilation')
+
 // • Transpilation (babelJSCompiler)
-require('@dependency/javascriptTranspilation')({ babelConfigurationFile: 'serverRuntime.BabelConfig.js' })
+let compiler = new Compiler({ babelTransformConfig: configuration.transpilation.babelConfig })
+compiler.requireHook()
 
 // • Run
-module.exports = require('./')
+Object.assign(module.exports, require('./')) // add exports that depend on runtime transpilation.
