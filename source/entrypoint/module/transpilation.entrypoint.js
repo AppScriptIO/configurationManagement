@@ -7,3 +7,8 @@ compiler.requireHook()
 
 // • Run
 Object.assign(module.exports, require('./')) // add exports that depend on runtime transpilation.
+
+// way to output runtime transpilation in circular dependency.
+// process.nextTick(() => {
+//   console.log(compiler.loadedFiles) // write any newer files transpiled in successive usage of this module.
+// })
