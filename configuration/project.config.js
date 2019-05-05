@@ -4,6 +4,18 @@ const { script } = require('./script.config.js')
 const ownConfiguration = {
   directory: {
     root: path.resolve(`${__dirname}/..`),
+    get source() {
+      return path.join(ownConfiguration.directory.root, './source')
+    },
+    get distribution() {
+      return path.join(ownConfiguration.directory.root, './distribution')
+    }, 
+    // get compiled() {
+    //   return path.join(ownConfiguration.directory.root, './distribution')
+    // }
+  },
+  entrypoint: {
+    programmaticAPI: '/script.js'
   },
   script,
   transpilation: {
