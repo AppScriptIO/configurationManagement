@@ -1,3 +1,4 @@
+rm -r ./distribution
 # entrypoint
 mkdir -p ./distribution/entrypoint/programmaticAPI/
 echo "module.exports = require('../../source/script.js')" >> ./distribution/entrypoint/programmaticAPI/index.js
