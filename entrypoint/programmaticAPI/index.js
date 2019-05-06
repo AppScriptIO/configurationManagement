@@ -1,4 +1,4 @@
-const projectConfig = require('../../configuration/project.config.js'), path = require('path'), filesystem = require('fs')
+const projectConfig = require('../../configuration'), path = require('path'), filesystem = require('fs')
 
 // • Run
 if(filesystem.existsSync(projectConfig.directory.distribution)) {
