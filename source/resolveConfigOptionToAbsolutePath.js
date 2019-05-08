@@ -1,17 +1,25 @@
-import path from 'path'
-import assert from 'assert'
-import { Configuration } from './Configuration.class.js'
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.resolveConfigOptionToAbsolutePath = resolveConfigOptionToAbsolutePath;
+
+var _path = _interopRequireDefault(require("path"));
 
 /**
  * Converts paths that are relative to absolute using `rootPath` as base for the relative paths.
  *
  */
-export function resolveConfigOptionToAbsolutePath({
+function resolveConfigOptionToAbsolutePath({
   optionPath,
-  rootPath, // instance of Configuration class
+  rootPath // instance of Configuration class
+
 }) {
-  optionPath = !path.isAbsolute(optionPath) // check if is relative or absolute.
-    ? path.join(rootPath, optionPath) // resolve path relative to root.
-    : optionPath
-  return optionPath
+  optionPath = !_path.default.isAbsolute(optionPath) // check if is relative or absolute.
+  ? _path.default.join(rootPath, optionPath) // resolve path relative to root.
+  : optionPath;
+  return optionPath;
 }
