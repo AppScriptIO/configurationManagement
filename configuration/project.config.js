@@ -9,13 +9,16 @@ const ownConfiguration = {
     },
     get distribution() {
       return path.join(ownConfiguration.directory.root, './distribution')
-    }, 
-    // get compiled() {
-    //   return path.join(ownConfiguration.directory.root, './distribution')
-    // }
+    },
+    get test() {
+      return path.join(ownConfig.directory.root, './test')
+    },
+    get script() {
+      return path.join(ownConfig.directory.root, './script')
+    },
   },
   entrypoint: {
-    programmaticAPI: './script.js'
+    programmaticAPI: './script.js',
   },
   script,
   transpilation: {

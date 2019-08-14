@@ -1,4 +1,4 @@
-const assert = require('assert')
+import assert from 'assert'
 
 /**
  * An interface for reading configuration object in a way that follows a configuration specification (`appscript` projects configuration rules).
