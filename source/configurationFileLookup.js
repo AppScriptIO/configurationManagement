@@ -1,127 +1,128 @@
-// This module should not depend on runtime transpilation, as it is used by the javascript tranpilation module.
-import path from 'path'
-import assert from 'assert'
-import { Configuration } from './Configuration.class.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.configurationFileLookup = configurationFileLookup;exports.findTargetProjectRoot = findTargetProjectRoot;
+var _path = _interopRequireDefault(require("path"));
+var _assert = _interopRequireDefault(require("assert"));
+var _ConfigurationClass = require("./Configuration.class.js");
 
-/**
- * Find configuration file according to specific assumptions and configuration of this module with preset defaults.
- * Assumptions made:
- *  - 'configuration' argument set relative to current working directory.
- * or
- *  - current working directory is the location where 'configuration' module should be present (e.g. '<app path>/setup')
- */
-export function configurationFileLookup({
-  configurationPath = 'configuration', // could be absolute or relative to CWD & base path. (can be also the name of the file)
-  currentDirectory, // path to start from
-  configurationBasePath = [], // [string | array of strings] path of directories where the configuration file should be searched in (additional starting path to look from). In case relative path it will be relative to the current working directory or relative to the current directory in the traversal algorithm.
-  possibleConfigurationPath = [], // accumulator of possible configuration paths to look for.
-} = {}) {
-  // TODO:(deal with this comment) default where the assumption that script executed in path '<app path>/setup'
 
-  /** Parameters initialization, sanitization, and validation */
 
-  // if `configurationBasePath` is a string, convert it to an array.
-  if (!Array.isArray(configurationBasePath)) configurationBasePath = [configurationBasePath]
 
-  // transform all configuration base paths to absolute
+
+
+
+
+function configurationFileLookup({
+  configurationPath = 'configuration',
+  currentDirectory,
+  configurationBasePath = [],
+  possibleConfigurationPath = [] } =
+{}) {
+
+
+
+
+
+  if (!Array.isArray(configurationBasePath)) configurationBasePath = [configurationBasePath];
+
+
   let configurationAbsoluteBasePath = configurationBasePath.map(basePath => {
-    if (path.isAbsolute(basePath)) return basePath
-    else return path.join(currentDirectory, basePath)
-  })
+    if (_path.default.isAbsolute(basePath)) return basePath;else
+    return _path.default.join(currentDirectory, basePath);
+  });
 
-  // add CWD to base paths that search will start from - by default search will always CWD as starting point.
-  configurationAbsoluteBasePath.push(currentDirectory)
 
-  /** Create possible absolute configuration paths */
+  configurationAbsoluteBasePath.push(currentDirectory);
 
-  // add provided configuration path to possible configuration paths (the lookup algorithm will be executed regardless of provided configuration path).
-  if (path.isAbsolute(configurationPath))
-    // absolute
-    possibleConfigurationPath.push(configurationPath)
-  else {
-    // relative path to base hierarchy paths.
+
+
+
+  if (_path.default.isAbsolute(configurationPath))
+
+    possibleConfigurationPath.push(configurationPath);else
+  {
+
     configurationAbsoluteBasePath = configurationAbsoluteBasePath.reduce((accumulator, basePath) => {
-      // get all traversal paths starting from the base paths.
-      return accumulator.concat(traversePath({ initialPath: basePath }))
-    }, [])
-    let additionalPossibleConfigPath = configurationAbsoluteBasePath.map(basePath => path.join(basePath, configurationPath)) // build configuration file absolute path.
-    possibleConfigurationPath = possibleConfigurationPath.concat(additionalPossibleConfigPath)
+
+      return accumulator.concat(traversePath({ initialPath: basePath }));
+    }, []);
+    let additionalPossibleConfigPath = configurationAbsoluteBasePath.map(basePath => _path.default.join(basePath, configurationPath));
+    possibleConfigurationPath = possibleConfigurationPath.concat(additionalPossibleConfigPath);
   }
 
-  // remove duplicate paths if any
-  possibleConfigurationPath = [...new Set(possibleConfigurationPath)] // filters any duplicates as `Set` creates an iterable with unique elements, i.e. filtering duplicates.
 
-  /** try loading configuration file, on first success break. */
+  possibleConfigurationPath = [...new Set(possibleConfigurationPath)];
+
+
   let errorAccumulator = [],
-    index = 0,
-    configurationAbsolutePath
+  index = 0,
+  configurationAbsolutePath;
   while (index < possibleConfigurationPath.length) {
-    let configurationPath = possibleConfigurationPath[index]
+    let configurationPath = possibleConfigurationPath[index];
     try {
-      require.resolve(configurationPath)
-      configurationAbsolutePath = configurationPath
-      break
+      require.resolve(configurationPath);
+      configurationAbsolutePath = configurationPath;
+      break;
     } catch (error) {
-      // try requiring all array loops
-      errorAccumulator.push(error)
+
+      errorAccumulator.push(error);
     }
-    index++
+    index++;
   }
 
   if (!configurationAbsolutePath) {
     console.log(
-      `%c45455455`,
-      'color: #F99157;',
-      'X `configuration` parameter (relative configuration path from PWD) in command line argument must be set, because the configuration algorithm failed to look it up.',
-    )
-    console.log(errorAccumulator)
-    throw new Error('• Lookup algorithm for target project configuration path failed.')
+    `%c45455455`,
+    'color: #F99157;',
+    'X `configuration` parameter (relative configuration path from PWD) in command line argument must be set, because the configuration algorithm failed to look it up.');
+
+    console.log(errorAccumulator);
+    throw new Error('• Lookup algorithm for target project configuration path failed.');
   }
 
-  // cleanup command arguments in case a chain of directly executed scripts is used.
-  process.argv = process.argv.filter(value => value !== `configuration=${configurationPath}`) // remove configuration paramter
+
+  process.argv = process.argv.filter(value => value !== `configuration=${configurationPath}`);
 
   return {
-    configuration: loadConfiguration(configurationAbsolutePath), // configuration object
-    path: configurationAbsolutePath, // configuration absolute path
-  }
+    configuration: loadConfiguration(configurationAbsolutePath),
+    path: configurationAbsolutePath };
+
 }
 
 function loadConfiguration(configPath) {
-  let configurationObject = require(configPath)
-  return new Configuration({ configuration: configurationObject })
+  let configurationObject = require(configPath);
+  return new _ConfigurationClass.Configuration({ configuration: configurationObject });
 }
 
-/**
- * returns all paths in the heirarchy by traversing to the parents till the reaching the root.
- */
+
+
+
 function traversePath({ initialPath, stopPath = ['node_modules'] }) {
-  let pathAccumulator = []
+  let pathAccumulator = [];
   let isRootDirectory = false,
-    currentPath = initialPath
+  currentPath = initialPath;
   while (!isRootDirectory) {
-    if (stopPath.includes(path.basename(currentPath)))
-      // stop lookup upon reaching any of the stop paths.
-      break
-    pathAccumulator.push(currentPath)
-    currentPath = path.dirname(currentPath)
-    isRootDirectory = currentPath == path.dirname(currentPath) // The logic behind checking if root directory.
+    if (stopPath.includes(_path.default.basename(currentPath)))
+
+      break;
+    pathAccumulator.push(currentPath);
+    currentPath = _path.default.dirname(currentPath);
+    isRootDirectory = currentPath == _path.default.dirname(currentPath);
   }
-  return pathAccumulator
+  return pathAccumulator;
 }
 
-// retrieve the project config using array of initial paths to start from.
-// expose a specific implementation of the lookup that relies on passing starting paths to lookup from.
-export function findTargetProjectRoot({ nestedProjectPath /* Array of paths [process.cwd(), module.parent.filename] */ } = {}) {
-  let targetProjectConfig
+
+
+function findTargetProjectRoot({ nestedProjectPath } = {}) {
+  let targetProjectConfig;
   for (let lookupPath of nestedProjectPath) {
     try {
-      ;({ configuration: targetProjectConfig } = configurationFileLookup({ currentDirectory: lookupPath }))
-      break
+      ;({ configuration: targetProjectConfig } = configurationFileLookup({ currentDirectory: lookupPath }));
+      break;
     } catch (error) {
-      // ignore
+
     }
   }
-  assert(targetProjectConfig, `• target project configuration file was not found from possible lookup paths.`)
-  return targetProjectConfig
+  (0, _assert.default)(targetProjectConfig, `• target project configuration file was not found from possible lookup paths.`);
+  return targetProjectConfig;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9jb25maWd1cmF0aW9uRmlsZUxvb2t1cC5qcyJdLCJuYW1lcyI6WyJjb25maWd1cmF0aW9uRmlsZUxvb2t1cCIsImNvbmZpZ3VyYXRpb25QYXRoIiwiY3VycmVudERpcmVjdG9yeSIsImNvbmZpZ3VyYXRpb25CYXNlUGF0aCIsInBvc3NpYmxlQ29uZmlndXJhdGlvblBhdGgiLCJBcnJheSIsImlzQXJyYXkiLCJjb25maWd1cmF0aW9uQWJzb2x1dGVCYXNlUGF0aCIsIm1hcCIsImJhc2VQYXRoIiwicGF0aCIsImlzQWJzb2x1dGUiLCJqb2luIiwicHVzaCIsInJlZHVjZSIsImFjY3VtdWxhdG9yIiwiY29uY2F0IiwidHJhdmVyc2VQYXRoIiwiaW5pdGlhbFBhdGgiLCJhZGRpdGlvbmFsUG9zc2libGVDb25maWdQYXRoIiwiU2V0IiwiZXJyb3JBY2N1bXVsYXRvciIsImluZGV4IiwiY29uZmlndXJhdGlvbkFic29sdXRlUGF0aCIsImxlbmd0aCIsInJlcXVpcmUiLCJyZXNvbHZlIiwiZXJyb3IiLCJjb25zb2xlIiwibG9nIiwiRXJyb3IiLCJwcm9jZXNzIiwiYXJndiIsImZpbHRlciIsInZhbHVlIiwiY29uZmlndXJhdGlvbiIsImxvYWRDb25maWd1cmF0aW9uIiwiY29uZmlnUGF0aCIsImNvbmZpZ3VyYXRpb25PYmplY3QiLCJDb25maWd1cmF0aW9uIiwic3RvcFBhdGgiLCJwYXRoQWNjdW11bGF0b3IiLCJpc1Jvb3REaXJlY3RvcnkiLCJjdXJyZW50UGF0aCIsImluY2x1ZGVzIiwiYmFzZW5hbWUiLCJkaXJuYW1lIiwiZmluZFRhcmdldFByb2plY3RSb290IiwibmVzdGVkUHJvamVjdFBhdGgiLCJ0YXJnZXRQcm9qZWN0Q29uZmlnIiwibG9va3VwUGF0aCJdLCJtYXBwaW5ncyI6IjtBQUNBO0FBQ0E7QUFDQTs7Ozs7Ozs7O0FBU08sU0FBU0EsdUJBQVQsQ0FBaUM7QUFDdENDLEVBQUFBLGlCQUFpQixHQUFHLGVBRGtCO0FBRXRDQyxFQUFBQSxnQkFGc0M7QUFHdENDLEVBQUFBLHFCQUFxQixHQUFHLEVBSGM7QUFJdENDLEVBQUFBLHlCQUF5QixHQUFHLEVBSlU7QUFLcEMsRUFMRyxFQUtDOzs7Ozs7QUFNTixNQUFJLENBQUNDLEtBQUssQ0FBQ0MsT0FBTixDQUFjSCxxQkFBZCxDQUFMLEVBQTJDQSxxQkFBcUIsR0FBRyxDQUFDQSxxQkFBRCxDQUF4Qjs7O0FBRzNDLE1BQUlJLDZCQUE2QixHQUFHSixxQkFBcUIsQ0FBQ0ssR0FBdEIsQ0FBMEJDLFFBQVEsSUFBSTtBQUN4RSxRQUFJQyxjQUFLQyxVQUFMLENBQWdCRixRQUFoQixDQUFKLEVBQStCLE9BQU9BLFFBQVAsQ0FBL0I7QUFDSyxXQUFPQyxjQUFLRSxJQUFMLENBQVVWLGdCQUFWLEVBQTRCTyxRQUE1QixDQUFQO0FBQ04sR0FIbUMsQ0FBcEM7OztBQU1BRixFQUFBQSw2QkFBNkIsQ0FBQ00sSUFBOUIsQ0FBbUNYLGdCQUFuQzs7Ozs7QUFLQSxNQUFJUSxjQUFLQyxVQUFMLENBQWdCVixpQkFBaEIsQ0FBSjs7QUFFRUcsSUFBQUEseUJBQXlCLENBQUNTLElBQTFCLENBQStCWixpQkFBL0IsRUFGRjtBQUdLOztBQUVITSxJQUFBQSw2QkFBNkIsR0FBR0EsNkJBQTZCLENBQUNPLE1BQTlCLENBQXFDLENBQUNDLFdBQUQsRUFBY04sUUFBZCxLQUEyQjs7QUFFOUYsYUFBT00sV0FBVyxDQUFDQyxNQUFaLENBQW1CQyxZQUFZLENBQUMsRUFBRUMsV0FBVyxFQUFFVCxRQUFmLEVBQUQsQ0FBL0IsQ0FBUDtBQUNELEtBSCtCLEVBRzdCLEVBSDZCLENBQWhDO0FBSUEsUUFBSVUsNEJBQTRCLEdBQUdaLDZCQUE2QixDQUFDQyxHQUE5QixDQUFrQ0MsUUFBUSxJQUFJQyxjQUFLRSxJQUFMLENBQVVILFFBQVYsRUFBb0JSLGlCQUFwQixDQUE5QyxDQUFuQztBQUNBRyxJQUFBQSx5QkFBeUIsR0FBR0EseUJBQXlCLENBQUNZLE1BQTFCLENBQWlDRyw0QkFBakMsQ0FBNUI7QUFDRDs7O0FBR0RmLEVBQUFBLHlCQUF5QixHQUFHLENBQUMsR0FBRyxJQUFJZ0IsR0FBSixDQUFRaEIseUJBQVIsQ0FBSixDQUE1Qjs7O0FBR0EsTUFBSWlCLGdCQUFnQixHQUFHLEVBQXZCO0FBQ0VDLEVBQUFBLEtBQUssR0FBRyxDQURWO0FBRUVDLEVBQUFBLHlCQUZGO0FBR0EsU0FBT0QsS0FBSyxHQUFHbEIseUJBQXlCLENBQUNvQixNQUF6QyxFQUFpRDtBQUMvQyxRQUFJdkIsaUJBQWlCLEdBQUdHLHlCQUF5QixDQUFDa0IsS0FBRCxDQUFqRDtBQUNBLFFBQUk7QUFDRkcsTUFBQUEsT0FBTyxDQUFDQyxPQUFSLENBQWdCekIsaUJBQWhCO0FBQ0FzQixNQUFBQSx5QkFBeUIsR0FBR3RCLGlCQUE1QjtBQUNBO0FBQ0QsS0FKRCxDQUlFLE9BQU8wQixLQUFQLEVBQWM7O0FBRWROLE1BQUFBLGdCQUFnQixDQUFDUixJQUFqQixDQUFzQmMsS0FBdEI7QUFDRDtBQUNETCxJQUFBQSxLQUFLO0FBQ047O0FBRUQsTUFBSSxDQUFDQyx5QkFBTCxFQUFnQztBQUM5QkssSUFBQUEsT0FBTyxDQUFDQyxHQUFSO0FBQ0csZ0JBREg7QUFFRSxxQkFGRjtBQUdFLHdLQUhGOztBQUtBRCxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBWVIsZ0JBQVo7QUFDQSxVQUFNLElBQUlTLEtBQUosQ0FBVSxrRUFBVixDQUFOO0FBQ0Q7OztBQUdEQyxFQUFBQSxPQUFPLENBQUNDLElBQVIsR0FBZUQsT0FBTyxDQUFDQyxJQUFSLENBQWFDLE1BQWIsQ0FBb0JDLEtBQUssSUFBSUEsS0FBSyxLQUFNLGlCQUFnQmpDLGlCQUFrQixFQUExRSxDQUFmOztBQUVBLFNBQU87QUFDTGtDLElBQUFBLGFBQWEsRUFBRUMsaUJBQWlCLENBQUNiLHlCQUFELENBRDNCO0FBRUxiLElBQUFBLElBQUksRUFBRWEseUJBRkQsRUFBUDs7QUFJRDs7QUFFRCxTQUFTYSxpQkFBVCxDQUEyQkMsVUFBM0IsRUFBdUM7QUFDckMsTUFBSUMsbUJBQW1CLEdBQUdiLE9BQU8sQ0FBQ1ksVUFBRCxDQUFqQztBQUNBLFNBQU8sSUFBSUUsaUNBQUosQ0FBa0IsRUFBRUosYUFBYSxFQUFFRyxtQkFBakIsRUFBbEIsQ0FBUDtBQUNEOzs7OztBQUtELFNBQVNyQixZQUFULENBQXNCLEVBQUVDLFdBQUYsRUFBZXNCLFFBQVEsR0FBRyxDQUFDLGNBQUQsQ0FBMUIsRUFBdEIsRUFBb0U7QUFDbEUsTUFBSUMsZUFBZSxHQUFHLEVBQXRCO0FBQ0EsTUFBSUMsZUFBZSxHQUFHLEtBQXRCO0FBQ0VDLEVBQUFBLFdBQVcsR0FBR3pCLFdBRGhCO0FBRUEsU0FBTyxDQUFDd0IsZUFBUixFQUF5QjtBQUN2QixRQUFJRixRQUFRLENBQUNJLFFBQVQsQ0FBa0JsQyxjQUFLbUMsUUFBTCxDQUFjRixXQUFkLENBQWxCLENBQUo7O0FBRUU7QUFDRkYsSUFBQUEsZUFBZSxDQUFDNUIsSUFBaEIsQ0FBcUI4QixXQUFyQjtBQUNBQSxJQUFBQSxXQUFXLEdBQUdqQyxjQUFLb0MsT0FBTCxDQUFhSCxXQUFiLENBQWQ7QUFDQUQsSUFBQUEsZUFBZSxHQUFHQyxXQUFXLElBQUlqQyxjQUFLb0MsT0FBTCxDQUFhSCxXQUFiLENBQWpDO0FBQ0Q7QUFDRCxTQUFPRixlQUFQO0FBQ0Q7Ozs7QUFJTSxTQUFTTSxxQkFBVCxDQUErQixFQUFFQyxpQkFBRixLQUFxRixFQUFwSCxFQUF3SDtBQUM3SCxNQUFJQyxtQkFBSjtBQUNBLE9BQUssSUFBSUMsVUFBVCxJQUF1QkYsaUJBQXZCLEVBQTBDO0FBQ3hDLFFBQUk7QUFDRixPQUFDLENBQUMsRUFBRWIsYUFBYSxFQUFFYyxtQkFBakIsS0FBeUNqRCx1QkFBdUIsQ0FBQyxFQUFFRSxnQkFBZ0IsRUFBRWdELFVBQXBCLEVBQUQsQ0FBakU7QUFDRDtBQUNELEtBSEQsQ0FHRSxPQUFPdkIsS0FBUCxFQUFjOztBQUVmO0FBQ0Y7QUFDRCx1QkFBT3NCLG1CQUFQLEVBQTZCLCtFQUE3QjtBQUNBLFNBQU9BLG1CQUFQO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBUaGlzIG1vZHVsZSBzaG91bGQgbm90IGRlcGVuZCBvbiBydW50aW1lIHRyYW5zcGlsYXRpb24sIGFzIGl0IGlzIHVzZWQgYnkgdGhlIGphdmFzY3JpcHQgdHJhbnBpbGF0aW9uIG1vZHVsZS5cclxuaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcclxuaW1wb3J0IGFzc2VydCBmcm9tICdhc3NlcnQnXHJcbmltcG9ydCB7IENvbmZpZ3VyYXRpb24gfSBmcm9tICcuL0NvbmZpZ3VyYXRpb24uY2xhc3MuanMnXHJcblxyXG4vKipcclxuICogRmluZCBjb25maWd1cmF0aW9uIGZpbGUgYWNjb3JkaW5nIHRvIHNwZWNpZmljIGFzc3VtcHRpb25zIGFuZCBjb25maWd1cmF0aW9uIG9mIHRoaXMgbW9kdWxlIHdpdGggcHJlc2V0IGRlZmF1bHRzLlxyXG4gKiBBc3N1bXB0aW9ucyBtYWRlOlxyXG4gKiAgLSAnY29uZmlndXJhdGlvbicgYXJndW1lbnQgc2V0IHJlbGF0aXZlIHRvIGN1cnJlbnQgd29ya2luZyBkaXJlY3RvcnkuXHJcbiAqIG9yXHJcbiAqICAtIGN1cnJlbnQgd29ya2luZyBkaXJlY3RvcnkgaXMgdGhlIGxvY2F0aW9uIHdoZXJlICdjb25maWd1cmF0aW9uJyBtb2R1bGUgc2hvdWxkIGJlIHByZXNlbnQgKGUuZy4gJzxhcHAgcGF0aD4vc2V0dXAnKVxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIGNvbmZpZ3VyYXRpb25GaWxlTG9va3VwKHtcclxuICBjb25maWd1cmF0aW9uUGF0aCA9ICdjb25maWd1cmF0aW9uJywgLy8gY291bGQgYmUgYWJzb2x1dGUgb3IgcmVsYXRpdmUgdG8gQ1dEICYgYmFzZSBwYXRoLiAoY2FuIGJlIGFsc28gdGhlIG5hbWUgb2YgdGhlIGZpbGUpXHJcbiAgY3VycmVudERpcmVjdG9yeSwgLy8gcGF0aCB0byBzdGFydCBmcm9tXHJcbiAgY29uZmlndXJhdGlvbkJhc2VQYXRoID0gW10sIC8vIFtzdHJpbmcgfCBhcnJheSBvZiBzdHJpbmdzXSBwYXRoIG9mIGRpcmVjdG9yaWVzIHdoZXJlIHRoZSBjb25maWd1cmF0aW9uIGZpbGUgc2hvdWxkIGJlIHNlYXJjaGVkIGluIChhZGRpdGlvbmFsIHN0YXJ0aW5nIHBhdGggdG8gbG9vayBmcm9tKS4gSW4gY2FzZSByZWxhdGl2ZSBwYXRoIGl0IHdpbGwgYmUgcmVsYXRpdmUgdG8gdGhlIGN1cnJlbnQgd29ya2luZyBkaXJlY3Rvcnkgb3IgcmVsYXRpdmUgdG8gdGhlIGN1cnJlbnQgZGlyZWN0b3J5IGluIHRoZSB0cmF2ZXJzYWwgYWxnb3JpdGhtLlxyXG4gIHBvc3NpYmxlQ29uZmlndXJhdGlvblBhdGggPSBbXSwgLy8gYWNjdW11bGF0b3Igb2YgcG9zc2libGUgY29uZmlndXJhdGlvbiBwYXRocyB0byBsb29rIGZvci5cclxufSA9IHt9KSB7XHJcbiAgLy8gVE9ETzooZGVhbCB3aXRoIHRoaXMgY29tbWVudCkgZGVmYXVsdCB3aGVyZSB0aGUgYXNzdW1wdGlvbiB0aGF0IHNjcmlwdCBleGVjdXRlZCBpbiBwYXRoICc8YXBwIHBhdGg+L3NldHVwJ1xyXG5cclxuICAvKiogUGFyYW1ldGVycyBpbml0aWFsaXphdGlvbiwgc2FuaXRpemF0aW9uLCBhbmQgdmFsaWRhdGlvbiAqL1xyXG5cclxuICAvLyBpZiBgY29uZmlndXJhdGlvbkJhc2VQYXRoYCBpcyBhIHN0cmluZywgY29udmVydCBpdCB0byBhbiBhcnJheS5cclxuICBpZiAoIUFycmF5LmlzQXJyYXkoY29uZmlndXJhdGlvbkJhc2VQYXRoKSkgY29uZmlndXJhdGlvbkJhc2VQYXRoID0gW2NvbmZpZ3VyYXRpb25CYXNlUGF0aF1cclxuXHJcbiAgLy8gdHJhbnNmb3JtIGFsbCBjb25maWd1cmF0aW9uIGJhc2UgcGF0aHMgdG8gYWJzb2x1dGVcclxuICBsZXQgY29uZmlndXJhdGlvbkFic29sdXRlQmFzZVBhdGggPSBjb25maWd1cmF0aW9uQmFzZVBhdGgubWFwKGJhc2VQYXRoID0+IHtcclxuICAgIGlmIChwYXRoLmlzQWJzb2x1dGUoYmFzZVBhdGgpKSByZXR1cm4gYmFzZVBhdGhcclxuICAgIGVsc2UgcmV0dXJuIHBhdGguam9pbihjdXJyZW50RGlyZWN0b3J5LCBiYXNlUGF0aClcclxuICB9KVxyXG5cclxuICAvLyBhZGQgQ1dEIHRvIGJhc2UgcGF0aHMgdGhhdCBzZWFyY2ggd2lsbCBzdGFydCBmcm9tIC0gYnkgZGVmYXVsdCBzZWFyY2ggd2lsbCBhbHdheXMgQ1dEIGFzIHN0YXJ0aW5nIHBvaW50LlxyXG4gIGNvbmZpZ3VyYXRpb25BYnNvbHV0ZUJhc2VQYXRoLnB1c2goY3VycmVudERpcmVjdG9yeSlcclxuXHJcbiAgLyoqIENyZWF0ZSBwb3NzaWJsZSBhYnNvbHV0ZSBjb25maWd1cmF0aW9uIHBhdGhzICovXHJcblxyXG4gIC8vIGFkZCBwcm92aWRlZCBjb25maWd1cmF0aW9uIHBhdGggdG8gcG9zc2libGUgY29uZmlndXJhdGlvbiBwYXRocyAodGhlIGxvb2t1cCBhbGdvcml0aG0gd2lsbCBiZSBleGVjdXRlZCByZWdhcmRsZXNzIG9mIHByb3ZpZGVkIGNvbmZpZ3VyYXRpb24gcGF0aCkuXHJcbiAgaWYgKHBhdGguaXNBYnNvbHV0ZShjb25maWd1cmF0aW9uUGF0aCkpXHJcbiAgICAvLyBhYnNvbHV0ZVxyXG4gICAgcG9zc2libGVDb25maWd1cmF0aW9uUGF0aC5wdXNoKGNvbmZpZ3VyYXRpb25QYXRoKVxyXG4gIGVsc2Uge1xyXG4gICAgLy8gcmVsYXRpdmUgcGF0aCB0byBiYXNlIGhpZXJhcmNoeSBwYXRocy5cclxuICAgIGNvbmZpZ3VyYXRpb25BYnNvbHV0ZUJhc2VQYXRoID0gY29uZmlndXJhdGlvbkFic29sdXRlQmFzZVBhdGgucmVkdWNlKChhY2N1bXVsYXRvciwgYmFzZVBhdGgpID0+IHtcclxuICAgICAgLy8gZ2V0IGFsbCB0cmF2ZXJzYWwgcGF0aHMgc3RhcnRpbmcgZnJvbSB0aGUgYmFzZSBwYXRocy5cclxuICAgICAgcmV0dXJuIGFjY3VtdWxhdG9yLmNvbmNhdCh0cmF2ZXJzZVBhdGgoeyBpbml0aWFsUGF0aDogYmFzZVBhdGggfSkpXHJcbiAgICB9LCBbXSlcclxuICAgIGxldCBhZGRpdGlvbmFsUG9zc2libGVDb25maWdQYXRoID0gY29uZmlndXJhdGlvbkFic29sdXRlQmFzZVBhdGgubWFwKGJhc2VQYXRoID0+IHBhdGguam9pbihiYXNlUGF0aCwgY29uZmlndXJhdGlvblBhdGgpKSAvLyBidWlsZCBjb25maWd1cmF0aW9uIGZpbGUgYWJzb2x1dGUgcGF0aC5cclxuICAgIHBvc3NpYmxlQ29uZmlndXJhdGlvblBhdGggPSBwb3NzaWJsZUNvbmZpZ3VyYXRpb25QYXRoLmNvbmNhdChhZGRpdGlvbmFsUG9zc2libGVDb25maWdQYXRoKVxyXG4gIH1cclxuXHJcbiAgLy8gcmVtb3ZlIGR1cGxpY2F0ZSBwYXRocyBpZiBhbnlcclxuICBwb3NzaWJsZUNvbmZpZ3VyYXRpb25QYXRoID0gWy4uLm5ldyBTZXQocG9zc2libGVDb25maWd1cmF0aW9uUGF0aCldIC8vIGZpbHRlcnMgYW55IGR1cGxpY2F0ZXMgYXMgYFNldGAgY3JlYXRlcyBhbiBpdGVyYWJsZSB3aXRoIHVuaXF1ZSBlbGVtZW50cywgaS5lLiBmaWx0ZXJpbmcgZHVwbGljYXRlcy5cclxuXHJcbiAgLyoqIHRyeSBsb2FkaW5nIGNvbmZpZ3VyYXRpb24gZmlsZSwgb24gZmlyc3Qgc3VjY2VzcyBicmVhay4gKi9cclxuICBsZXQgZXJyb3JBY2N1bXVsYXRvciA9IFtdLFxyXG4gICAgaW5kZXggPSAwLFxyXG4gICAgY29uZmlndXJhdGlvbkFic29sdXRlUGF0aFxyXG4gIHdoaWxlIChpbmRleCA8IHBvc3NpYmxlQ29uZmlndXJhdGlvblBhdGgubGVuZ3RoKSB7XHJcbiAgICBsZXQgY29uZmlndXJhdGlvblBhdGggPSBwb3NzaWJsZUNvbmZpZ3VyYXRpb25QYXRoW2luZGV4XVxyXG4gICAgdHJ5IHtcclxuICAgICAgcmVxdWlyZS5yZXNvbHZlKGNvbmZpZ3VyYXRpb25QYXRoKVxyXG4gICAgICBjb25maWd1cmF0aW9uQWJzb2x1dGVQYXRoID0gY29uZmlndXJhdGlvblBhdGhcclxuICAgICAgYnJlYWtcclxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XHJcbiAgICAgIC8vIHRyeSByZXF1aXJpbmcgYWxsIGFycmF5IGxvb3BzXHJcbiAgICAgIGVycm9yQWNjdW11bGF0b3IucHVzaChlcnJvcilcclxuICAgIH1cclxuICAgIGluZGV4KytcclxuICB9XHJcblxyXG4gIGlmICghY29uZmlndXJhdGlvbkFic29sdXRlUGF0aCkge1xyXG4gICAgY29uc29sZS5sb2coXHJcbiAgICAgIGAlYzQ1NDU1NDU1YCxcclxuICAgICAgJ2NvbG9yOiAjRjk5MTU3OycsXHJcbiAgICAgICdYIGBjb25maWd1cmF0aW9uYCBwYXJhbWV0ZXIgKHJlbGF0aXZlIGNvbmZpZ3VyYXRpb24gcGF0aCBmcm9tIFBXRCkgaW4gY29tbWFuZCBsaW5lIGFyZ3VtZW50IG11c3QgYmUgc2V0LCBiZWNhdXNlIHRoZSBjb25maWd1cmF0aW9uIGFsZ29yaXRobSBmYWlsZWQgdG8gbG9vayBpdCB1cC4nLFxyXG4gICAgKVxyXG4gICAgY29uc29sZS5sb2coZXJyb3JBY2N1bXVsYXRvcilcclxuICAgIHRocm93IG5ldyBFcnJvcign4oCiIExvb2t1cCBhbGdvcml0aG0gZm9yIHRhcmdldCBwcm9qZWN0IGNvbmZpZ3VyYXRpb24gcGF0aCBmYWlsZWQuJylcclxuICB9XHJcblxyXG4gIC8vIGNsZWFudXAgY29tbWFuZCBhcmd1bWVudHMgaW4gY2FzZSBhIGNoYWluIG9mIGRpcmVjdGx5IGV4ZWN1dGVkIHNjcmlwdHMgaXMgdXNlZC5cclxuICBwcm9jZXNzLmFyZ3YgPSBwcm9jZXNzLmFyZ3YuZmlsdGVyKHZhbHVlID0+IHZhbHVlICE9PSBgY29uZmlndXJhdGlvbj0ke2NvbmZpZ3VyYXRpb25QYXRofWApIC8vIHJlbW92ZSBjb25maWd1cmF0aW9uIHBhcmFtdGVyXHJcblxyXG4gIHJldHVybiB7XHJcbiAgICBjb25maWd1cmF0aW9uOiBsb2FkQ29uZmlndXJhdGlvbihjb25maWd1cmF0aW9uQWJzb2x1dGVQYXRoKSwgLy8gY29uZmlndXJhdGlvbiBvYmplY3RcclxuICAgIHBhdGg6IGNvbmZpZ3VyYXRpb25BYnNvbHV0ZVBhdGgsIC8vIGNvbmZpZ3VyYXRpb24gYWJzb2x1dGUgcGF0aFxyXG4gIH1cclxufVxyXG5cclxuZnVuY3Rpb24gbG9hZENvbmZpZ3VyYXRpb24oY29uZmlnUGF0aCkge1xyXG4gIGxldCBjb25maWd1cmF0aW9uT2JqZWN0ID0gcmVxdWlyZShjb25maWdQYXRoKVxyXG4gIHJldHVybiBuZXcgQ29uZmlndXJhdGlvbih7IGNvbmZpZ3VyYXRpb246IGNvbmZpZ3VyYXRpb25PYmplY3QgfSlcclxufVxyXG5cclxuLyoqXHJcbiAqIHJldHVybnMgYWxsIHBhdGhzIGluIHRoZSBoZWlyYXJjaHkgYnkgdHJhdmVyc2luZyB0byB0aGUgcGFyZW50cyB0aWxsIHRoZSByZWFjaGluZyB0aGUgcm9vdC5cclxuICovXHJcbmZ1bmN0aW9uIHRyYXZlcnNlUGF0aCh7IGluaXRpYWxQYXRoLCBzdG9wUGF0aCA9IFsnbm9kZV9tb2R1bGVzJ10gfSkge1xyXG4gIGxldCBwYXRoQWNjdW11bGF0b3IgPSBbXVxyXG4gIGxldCBpc1Jvb3REaXJlY3RvcnkgPSBmYWxzZSxcclxuICAgIGN1cnJlbnRQYXRoID0gaW5pdGlhbFBhdGhcclxuICB3aGlsZSAoIWlzUm9vdERpcmVjdG9yeSkge1xyXG4gICAgaWYgKHN0b3BQYXRoLmluY2x1ZGVzKHBhdGguYmFzZW5hbWUoY3VycmVudFBhdGgpKSlcclxuICAgICAgLy8gc3RvcCBsb29rdXAgdXBvbiByZWFjaGluZyBhbnkgb2YgdGhlIHN0b3AgcGF0aHMuXHJcbiAgICAgIGJyZWFrXHJcbiAgICBwYXRoQWNjdW11bGF0b3IucHVzaChjdXJyZW50UGF0aClcclxuICAgIGN1cnJlbnRQYXRoID0gcGF0aC5kaXJuYW1lKGN1cnJlbnRQYXRoKVxyXG4gICAgaXNSb290RGlyZWN0b3J5ID0gY3VycmVudFBhdGggPT0gcGF0aC5kaXJuYW1lKGN1cnJlbnRQYXRoKSAvLyBUaGUgbG9naWMgYmVoaW5kIGNoZWNraW5nIGlmIHJvb3QgZGlyZWN0b3J5LlxyXG4gIH1cclxuICByZXR1cm4gcGF0aEFjY3VtdWxhdG9yXHJcbn1cclxuXHJcbi8vIHJldHJpZXZlIHRoZSBwcm9qZWN0IGNvbmZpZyB1c2luZyBhcnJheSBvZiBpbml0aWFsIHBhdGhzIHRvIHN0YXJ0IGZyb20uXHJcbi8vIGV4cG9zZSBhIHNwZWNpZmljIGltcGxlbWVudGF0aW9uIG9mIHRoZSBsb29rdXAgdGhhdCByZWxpZXMgb24gcGFzc2luZyBzdGFydGluZyBwYXRocyB0byBsb29rdXAgZnJvbS5cclxuZXhwb3J0IGZ1bmN0aW9uIGZpbmRUYXJnZXRQcm9qZWN0Um9vdCh7IG5lc3RlZFByb2plY3RQYXRoIC8qIEFycmF5IG9mIHBhdGhzIFtwcm9jZXNzLmN3ZCgpLCBtb2R1bGUucGFyZW50LmZpbGVuYW1lXSAqLyB9ID0ge30pIHtcclxuICBsZXQgdGFyZ2V0UHJvamVjdENvbmZpZ1xyXG4gIGZvciAobGV0IGxvb2t1cFBhdGggb2YgbmVzdGVkUHJvamVjdFBhdGgpIHtcclxuICAgIHRyeSB7XHJcbiAgICAgIDsoeyBjb25maWd1cmF0aW9uOiB0YXJnZXRQcm9qZWN0Q29uZmlnIH0gPSBjb25maWd1cmF0aW9uRmlsZUxvb2t1cCh7IGN1cnJlbnREaXJlY3Rvcnk6IGxvb2t1cFBhdGggfSkpXHJcbiAgICAgIGJyZWFrXHJcbiAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICAvLyBpZ25vcmVcclxuICAgIH1cclxuICB9XHJcbiAgYXNzZXJ0KHRhcmdldFByb2plY3RDb25maWcsIGDigKIgdGFyZ2V0IHByb2plY3QgY29uZmlndXJhdGlvbiBmaWxlIHdhcyBub3QgZm91bmQgZnJvbSBwb3NzaWJsZSBsb29rdXAgcGF0aHMuYClcclxuICByZXR1cm4gdGFyZ2V0UHJvamVjdENvbmZpZ1xyXG59XHJcbiJdfQ==

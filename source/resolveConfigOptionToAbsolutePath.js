@@ -1,17 +1,18 @@
-import path from 'path'
-import assert from 'assert'
-import { Configuration } from './Configuration.class.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.resolveConfigOptionToAbsolutePath = resolveConfigOptionToAbsolutePath;var _path = _interopRequireDefault(require("path"));
 
-/**
- * Converts paths that are relative to absolute using `rootPath` as base for the relative paths.
- *
- */
-export function resolveConfigOptionToAbsolutePath({
+
+
+
+
+
+
+function resolveConfigOptionToAbsolutePath({
   optionPath,
-  rootPath, // instance of Configuration class
-}) {
-  optionPath = !path.isAbsolute(optionPath) // check if is relative or absolute.
-    ? path.join(rootPath, optionPath) // resolve path relative to root.
-    : optionPath
-  return optionPath
+  rootPath })
+{
+  optionPath = !_path.default.isAbsolute(optionPath) ?
+  _path.default.join(rootPath, optionPath) :
+  optionPath;
+  return optionPath;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9yZXNvbHZlQ29uZmlnT3B0aW9uVG9BYnNvbHV0ZVBhdGguanMiXSwibmFtZXMiOlsicmVzb2x2ZUNvbmZpZ09wdGlvblRvQWJzb2x1dGVQYXRoIiwib3B0aW9uUGF0aCIsInJvb3RQYXRoIiwicGF0aCIsImlzQWJzb2x1dGUiLCJqb2luIl0sIm1hcHBpbmdzIjoiOE9BQUE7Ozs7Ozs7O0FBUU8sU0FBU0EsaUNBQVQsQ0FBMkM7QUFDaERDLEVBQUFBLFVBRGdEO0FBRWhEQyxFQUFBQSxRQUZnRCxFQUEzQztBQUdKO0FBQ0RELEVBQUFBLFVBQVUsR0FBRyxDQUFDRSxjQUFLQyxVQUFMLENBQWdCSCxVQUFoQixDQUFEO0FBQ1RFLGdCQUFLRSxJQUFMLENBQVVILFFBQVYsRUFBb0JELFVBQXBCLENBRFM7QUFFVEEsRUFBQUEsVUFGSjtBQUdBLFNBQU9BLFVBQVA7QUFDRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXHJcbmltcG9ydCBhc3NlcnQgZnJvbSAnYXNzZXJ0J1xyXG5pbXBvcnQgeyBDb25maWd1cmF0aW9uIH0gZnJvbSAnLi9Db25maWd1cmF0aW9uLmNsYXNzLmpzJ1xyXG5cclxuLyoqXHJcbiAqIENvbnZlcnRzIHBhdGhzIHRoYXQgYXJlIHJlbGF0aXZlIHRvIGFic29sdXRlIHVzaW5nIGByb290UGF0aGAgYXMgYmFzZSBmb3IgdGhlIHJlbGF0aXZlIHBhdGhzLlxyXG4gKlxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIHJlc29sdmVDb25maWdPcHRpb25Ub0Fic29sdXRlUGF0aCh7XHJcbiAgb3B0aW9uUGF0aCxcclxuICByb290UGF0aCwgLy8gaW5zdGFuY2Ugb2YgQ29uZmlndXJhdGlvbiBjbGFzc1xyXG59KSB7XHJcbiAgb3B0aW9uUGF0aCA9ICFwYXRoLmlzQWJzb2x1dGUob3B0aW9uUGF0aCkgLy8gY2hlY2sgaWYgaXMgcmVsYXRpdmUgb3IgYWJzb2x1dGUuXHJcbiAgICA/IHBhdGguam9pbihyb290UGF0aCwgb3B0aW9uUGF0aCkgLy8gcmVzb2x2ZSBwYXRoIHJlbGF0aXZlIHRvIHJvb3QuXHJcbiAgICA6IG9wdGlvblBhdGhcclxuICByZXR1cm4gb3B0aW9uUGF0aFxyXG59XHJcbiJdfQ==
