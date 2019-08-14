@@ -2,9 +2,10 @@
     "name": "@dependency/configurationManagement",
     "version": "1.0.1",
     "main": "./entrypoint/programmaticAPI",
-    "dependencies": {
+    "scripts": {
         "buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
     },
+    "dependencies": {},
     "devDependencies": {
         "@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x",
         "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
