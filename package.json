@@ -1,6 +1,6 @@
 {
 	"name": "@dependency/configurationManagement",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"main": "./entrypoint/programmaticAPI",
 	"scripts": {
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
