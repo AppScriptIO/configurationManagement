@@ -89,6 +89,9 @@ export function configurationFileLookup({
 
 function loadConfiguration(configPath) {
   let configurationObject = require(configPath)
+  if(Object.entries(configurationObject).length === 0 && configurationObject.constructor === Object) 
+    throw new Error(`• Configuration "${configPath}" cannot be empty, or module didn't load completely because of circular dependencies."`)
+ 
   return new Configuration({ configuration: configurationObject })
 }
 
@@ -119,7 +122,7 @@ export function findTargetProjectRoot({ nestedProjectPath /* Array of paths [pro
       ;({ configuration: targetProjectConfig } = configurationFileLookup({ currentDirectory: lookupPath }))
       break
     } catch (error) {
-      // ignore
+      throw error
     }
   }
   assert(targetProjectConfig, `• target project configuration file was not found from possible lookup paths.`)

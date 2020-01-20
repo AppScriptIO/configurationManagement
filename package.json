@@ -3,8 +3,9 @@
 	"version": "1.0.4",
 	"main": "./entrypoint/programmaticAPI",
 	"scripts": {
-		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
-	},
+		"build": "yarn run scriptManager shouldCompileScript=true @dependency/deploymentScript \".buildSourceCode.moduleProject({}, {compile:[/**'./test'*/]})\"",
+		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true @dependency/deploymentScript \".buildAndRelease.moduleProject({})\""
+	},	
 	"dependencies": {},
 	"devDependencies": {
 		"@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x",
