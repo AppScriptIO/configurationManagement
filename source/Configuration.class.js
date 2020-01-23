@@ -1,24 +1,24 @@
-import assert from 'assert'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.Configuration = void 0;var _assert = _interopRequireDefault(require("assert"));
 
-/**
- * An interface for reading configuration object in a way that follows a configuration specification (`appscript` projects configuration rules).
- * TODO: integrate a plugin system to allow extending the configuration api to follow different rules or specifications.
- */
-export class Configuration {
+
+
+
+
+class Configuration {
   constructor({ configuration = {} }) {
-    this.configuration = configuration
+    this.configuration = configuration;
     return new Proxy(this, {
-      // redirect requests to `this.configuration` when no method on the instance is found.
+
       get(target, name) {
-        if (!target[name]) return target.configuration[name]
-        return target[name]
-      },
-    })
+        if (!target[name]) return target.configuration[name];
+        return target[name];
+      } });
+
   }
 
   get rootPath() {
-    let rootPath = this.configuration.directory.root
-    assert(rootPath, `❌ Configuration 'root path' option must be defined.`) // validate
-    return rootPath
-  }
-}
+    let rootPath = this.configuration.directory.root;
+    (0, _assert.default)(rootPath, `❌ Configuration 'root path' option must be defined.`);
+    return rootPath;
+  }}exports.Configuration = Configuration;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9Db25maWd1cmF0aW9uLmNsYXNzLmpzIl0sIm5hbWVzIjpbIkNvbmZpZ3VyYXRpb24iLCJjb25zdHJ1Y3RvciIsImNvbmZpZ3VyYXRpb24iLCJQcm94eSIsImdldCIsInRhcmdldCIsIm5hbWUiLCJyb290UGF0aCIsImRpcmVjdG9yeSIsInJvb3QiXSwibWFwcGluZ3MiOiIrTEFBQTs7Ozs7O0FBTU8sTUFBTUEsYUFBTixDQUFvQjtBQUN6QkMsRUFBQUEsV0FBVyxDQUFDLEVBQUVDLGFBQWEsR0FBRyxFQUFsQixFQUFELEVBQXlCO0FBQ2xDLFNBQUtBLGFBQUwsR0FBcUJBLGFBQXJCO0FBQ0EsV0FBTyxJQUFJQyxLQUFKLENBQVUsSUFBVixFQUFnQjs7QUFFckJDLE1BQUFBLEdBQUcsQ0FBQ0MsTUFBRCxFQUFTQyxJQUFULEVBQWU7QUFDaEIsWUFBSSxDQUFDRCxNQUFNLENBQUNDLElBQUQsQ0FBWCxFQUFtQixPQUFPRCxNQUFNLENBQUNILGFBQVAsQ0FBcUJJLElBQXJCLENBQVA7QUFDbkIsZUFBT0QsTUFBTSxDQUFDQyxJQUFELENBQWI7QUFDRCxPQUxvQixFQUFoQixDQUFQOztBQU9EOztBQUVELE1BQUlDLFFBQUosR0FBZTtBQUNiLFFBQUlBLFFBQVEsR0FBRyxLQUFLTCxhQUFMLENBQW1CTSxTQUFuQixDQUE2QkMsSUFBNUM7QUFDQSx5QkFBT0YsUUFBUCxFQUFrQixxREFBbEI7QUFDQSxXQUFPQSxRQUFQO0FBQ0QsR0FoQndCLEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgYXNzZXJ0IGZyb20gJ2Fzc2VydCdcclxuXHJcbi8qKlxyXG4gKiBBbiBpbnRlcmZhY2UgZm9yIHJlYWRpbmcgY29uZmlndXJhdGlvbiBvYmplY3QgaW4gYSB3YXkgdGhhdCBmb2xsb3dzIGEgY29uZmlndXJhdGlvbiBzcGVjaWZpY2F0aW9uIChgYXBwc2NyaXB0YCBwcm9qZWN0cyBjb25maWd1cmF0aW9uIHJ1bGVzKS5cclxuICogVE9ETzogaW50ZWdyYXRlIGEgcGx1Z2luIHN5c3RlbSB0byBhbGxvdyBleHRlbmRpbmcgdGhlIGNvbmZpZ3VyYXRpb24gYXBpIHRvIGZvbGxvdyBkaWZmZXJlbnQgcnVsZXMgb3Igc3BlY2lmaWNhdGlvbnMuXHJcbiAqL1xyXG5leHBvcnQgY2xhc3MgQ29uZmlndXJhdGlvbiB7XHJcbiAgY29uc3RydWN0b3IoeyBjb25maWd1cmF0aW9uID0ge30gfSkge1xyXG4gICAgdGhpcy5jb25maWd1cmF0aW9uID0gY29uZmlndXJhdGlvblxyXG4gICAgcmV0dXJuIG5ldyBQcm94eSh0aGlzLCB7XHJcbiAgICAgIC8vIHJlZGlyZWN0IHJlcXVlc3RzIHRvIGB0aGlzLmNvbmZpZ3VyYXRpb25gIHdoZW4gbm8gbWV0aG9kIG9uIHRoZSBpbnN0YW5jZSBpcyBmb3VuZC5cclxuICAgICAgZ2V0KHRhcmdldCwgbmFtZSkge1xyXG4gICAgICAgIGlmICghdGFyZ2V0W25hbWVdKSByZXR1cm4gdGFyZ2V0LmNvbmZpZ3VyYXRpb25bbmFtZV1cclxuICAgICAgICByZXR1cm4gdGFyZ2V0W25hbWVdXHJcbiAgICAgIH0sXHJcbiAgICB9KVxyXG4gIH1cclxuXHJcbiAgZ2V0IHJvb3RQYXRoKCkge1xyXG4gICAgbGV0IHJvb3RQYXRoID0gdGhpcy5jb25maWd1cmF0aW9uLmRpcmVjdG9yeS5yb290XHJcbiAgICBhc3NlcnQocm9vdFBhdGgsIGDinYwgQ29uZmlndXJhdGlvbiAncm9vdCBwYXRoJyBvcHRpb24gbXVzdCBiZSBkZWZpbmVkLmApIC8vIHZhbGlkYXRlXHJcbiAgICByZXR1cm4gcm9vdFBhdGhcclxuICB9XHJcbn1cclxuIl19
