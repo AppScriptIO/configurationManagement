@@ -1,34 +1,34 @@
-import assert from 'assert'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.Configuration = void 0;var _assert = _interopRequireDefault(require("assert"));
 
-/** Configuration API
- * An interface for reading configuration object in a way that follows a configuration specification (`appscript` projects configuration rules).
- * TODO: integrate a plugin system to allow extending the configuration api to follow different rules or specifications.
- */
-export class Configuration {
+
+
+
+
+class Configuration {
   constructor({ configuration = {} }) {
-    this.configuration = configuration // bare configuration, can be used directly or through the Configuration class api.
+    this.configuration = configuration;
 
     return new Proxy(this, {
-      // redirect requests to `this.configuration` when no method on the instance is found.
+
       get(target, name) {
-        if (!target[name]) return target.configuration[name]
-        return target[name]
-      },
-    })
+        if (!target[name]) return target.configuration[name];
+        return target[name];
+      } });
+
   }
 
   get rootPath() {
-    let rootPath = this.configuration.directory.root
-    assert(rootPath, `❌ Configuration 'root path' option must be defined.`) // validate
-    return rootPath
+    let rootPath = this.configuration.directory.root;
+    (0, _assert.default)(rootPath, `❌ Configuration 'root path' option must be defined.`);
+    return rootPath;
   }
 
-  // Pick transpilation when a list is provided
+
   getTranspilation({ target = 'serverSide' } = {}) {
-    assert(this.configuration.transpilation, `• Configuration (${this.rootPath}) does not have "transpilation" property.`)
-    let configList = !Array.isArray(this.configuration.transpilation) ? [this.configuration.transpilation] : this.configuration.transpilation // convert to array
+    (0, _assert.default)(this.configuration.transpilation, `• Configuration (${this.rootPath}) does not have "transpilation" property.`);
+    let configList = !Array.isArray(this.configuration.transpilation) ? [this.configuration.transpilation] : this.configuration.transpilation;
 
-    if (configList.length == 0) return undefined
-    else return configList.find(item => item.target == target) || configList[0]
-  }
-}
+    if (configList.length == 0) return undefined;else
+    return configList.find(item => item.target == target) || configList[0];
+  }}exports.Configuration = Configuration;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9Db25maWd1cmF0aW9uLmNsYXNzLmpzIl0sIm5hbWVzIjpbIkNvbmZpZ3VyYXRpb24iLCJjb25zdHJ1Y3RvciIsImNvbmZpZ3VyYXRpb24iLCJQcm94eSIsImdldCIsInRhcmdldCIsIm5hbWUiLCJyb290UGF0aCIsImRpcmVjdG9yeSIsInJvb3QiLCJnZXRUcmFuc3BpbGF0aW9uIiwidHJhbnNwaWxhdGlvbiIsImNvbmZpZ0xpc3QiLCJBcnJheSIsImlzQXJyYXkiLCJsZW5ndGgiLCJ1bmRlZmluZWQiLCJmaW5kIiwiaXRlbSJdLCJtYXBwaW5ncyI6IitMQUFBOzs7Ozs7QUFNTyxNQUFNQSxhQUFOLENBQW9CO0FBQ3pCQyxFQUFBQSxXQUFXLENBQUMsRUFBRUMsYUFBYSxHQUFHLEVBQWxCLEVBQUQsRUFBeUI7QUFDbEMsU0FBS0EsYUFBTCxHQUFxQkEsYUFBckI7O0FBRUEsV0FBTyxJQUFJQyxLQUFKLENBQVUsSUFBVixFQUFnQjs7QUFFckJDLE1BQUFBLEdBQUcsQ0FBQ0MsTUFBRCxFQUFTQyxJQUFULEVBQWU7QUFDaEIsWUFBSSxDQUFDRCxNQUFNLENBQUNDLElBQUQsQ0FBWCxFQUFtQixPQUFPRCxNQUFNLENBQUNILGFBQVAsQ0FBcUJJLElBQXJCLENBQVA7QUFDbkIsZUFBT0QsTUFBTSxDQUFDQyxJQUFELENBQWI7QUFDRCxPQUxvQixFQUFoQixDQUFQOztBQU9EOztBQUVELE1BQUlDLFFBQUosR0FBZTtBQUNiLFFBQUlBLFFBQVEsR0FBRyxLQUFLTCxhQUFMLENBQW1CTSxTQUFuQixDQUE2QkMsSUFBNUM7QUFDQSx5QkFBT0YsUUFBUCxFQUFrQixxREFBbEI7QUFDQSxXQUFPQSxRQUFQO0FBQ0Q7OztBQUdERyxFQUFBQSxnQkFBZ0IsQ0FBQyxFQUFFTCxNQUFNLEdBQUcsWUFBWCxLQUE0QixFQUE3QixFQUFpQztBQUMvQyx5QkFBTyxLQUFLSCxhQUFMLENBQW1CUyxhQUExQixFQUEwQyxvQkFBbUIsS0FBS0osUUFBUywyQ0FBM0U7QUFDQSxRQUFJSyxVQUFVLEdBQUcsQ0FBQ0MsS0FBSyxDQUFDQyxPQUFOLENBQWMsS0FBS1osYUFBTCxDQUFtQlMsYUFBakMsQ0FBRCxHQUFtRCxDQUFDLEtBQUtULGFBQUwsQ0FBbUJTLGFBQXBCLENBQW5ELEdBQXdGLEtBQUtULGFBQUwsQ0FBbUJTLGFBQTVIOztBQUVBLFFBQUlDLFVBQVUsQ0FBQ0csTUFBWCxJQUFxQixDQUF6QixFQUE0QixPQUFPQyxTQUFQLENBQTVCO0FBQ0ssV0FBT0osVUFBVSxDQUFDSyxJQUFYLENBQWdCQyxJQUFJLElBQUlBLElBQUksQ0FBQ2IsTUFBTCxJQUFlQSxNQUF2QyxLQUFrRE8sVUFBVSxDQUFDLENBQUQsQ0FBbkU7QUFDTixHQTFCd0IsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBhc3NlcnQgZnJvbSAnYXNzZXJ0J1xyXG5cclxuLyoqIENvbmZpZ3VyYXRpb24gQVBJXHJcbiAqIEFuIGludGVyZmFjZSBmb3IgcmVhZGluZyBjb25maWd1cmF0aW9uIG9iamVjdCBpbiBhIHdheSB0aGF0IGZvbGxvd3MgYSBjb25maWd1cmF0aW9uIHNwZWNpZmljYXRpb24gKGBhcHBzY3JpcHRgIHByb2plY3RzIGNvbmZpZ3VyYXRpb24gcnVsZXMpLlxyXG4gKiBUT0RPOiBpbnRlZ3JhdGUgYSBwbHVnaW4gc3lzdGVtIHRvIGFsbG93IGV4dGVuZGluZyB0aGUgY29uZmlndXJhdGlvbiBhcGkgdG8gZm9sbG93IGRpZmZlcmVudCBydWxlcyBvciBzcGVjaWZpY2F0aW9ucy5cclxuICovXHJcbmV4cG9ydCBjbGFzcyBDb25maWd1cmF0aW9uIHtcclxuICBjb25zdHJ1Y3Rvcih7IGNvbmZpZ3VyYXRpb24gPSB7fSB9KSB7XHJcbiAgICB0aGlzLmNvbmZpZ3VyYXRpb24gPSBjb25maWd1cmF0aW9uIC8vIGJhcmUgY29uZmlndXJhdGlvbiwgY2FuIGJlIHVzZWQgZGlyZWN0bHkgb3IgdGhyb3VnaCB0aGUgQ29uZmlndXJhdGlvbiBjbGFzcyBhcGkuXHJcblxyXG4gICAgcmV0dXJuIG5ldyBQcm94eSh0aGlzLCB7XHJcbiAgICAgIC8vIHJlZGlyZWN0IHJlcXVlc3RzIHRvIGB0aGlzLmNvbmZpZ3VyYXRpb25gIHdoZW4gbm8gbWV0aG9kIG9uIHRoZSBpbnN0YW5jZSBpcyBmb3VuZC5cclxuICAgICAgZ2V0KHRhcmdldCwgbmFtZSkge1xyXG4gICAgICAgIGlmICghdGFyZ2V0W25hbWVdKSByZXR1cm4gdGFyZ2V0LmNvbmZpZ3VyYXRpb25bbmFtZV1cclxuICAgICAgICByZXR1cm4gdGFyZ2V0W25hbWVdXHJcbiAgICAgIH0sXHJcbiAgICB9KVxyXG4gIH1cclxuXHJcbiAgZ2V0IHJvb3RQYXRoKCkge1xyXG4gICAgbGV0IHJvb3RQYXRoID0gdGhpcy5jb25maWd1cmF0aW9uLmRpcmVjdG9yeS5yb290XHJcbiAgICBhc3NlcnQocm9vdFBhdGgsIGDinYwgQ29uZmlndXJhdGlvbiAncm9vdCBwYXRoJyBvcHRpb24gbXVzdCBiZSBkZWZpbmVkLmApIC8vIHZhbGlkYXRlXHJcbiAgICByZXR1cm4gcm9vdFBhdGhcclxuICB9XHJcblxyXG4gIC8vIFBpY2sgdHJhbnNwaWxhdGlvbiB3aGVuIGEgbGlzdCBpcyBwcm92aWRlZFxyXG4gIGdldFRyYW5zcGlsYXRpb24oeyB0YXJnZXQgPSAnc2VydmVyU2lkZScgfSA9IHt9KSB7XHJcbiAgICBhc3NlcnQodGhpcy5jb25maWd1cmF0aW9uLnRyYW5zcGlsYXRpb24sIGDigKIgQ29uZmlndXJhdGlvbiAoJHt0aGlzLnJvb3RQYXRofSkgZG9lcyBub3QgaGF2ZSBcInRyYW5zcGlsYXRpb25cIiBwcm9wZXJ0eS5gKVxyXG4gICAgbGV0IGNvbmZpZ0xpc3QgPSAhQXJyYXkuaXNBcnJheSh0aGlzLmNvbmZpZ3VyYXRpb24udHJhbnNwaWxhdGlvbikgPyBbdGhpcy5jb25maWd1cmF0aW9uLnRyYW5zcGlsYXRpb25dIDogdGhpcy5jb25maWd1cmF0aW9uLnRyYW5zcGlsYXRpb24gLy8gY29udmVydCB0byBhcnJheVxyXG5cclxuICAgIGlmIChjb25maWdMaXN0Lmxlbmd0aCA9PSAwKSByZXR1cm4gdW5kZWZpbmVkXHJcbiAgICBlbHNlIHJldHVybiBjb25maWdMaXN0LmZpbmQoaXRlbSA9PiBpdGVtLnRhcmdldCA9PSB0YXJnZXQpIHx8IGNvbmZpZ0xpc3RbMF1cclxuICB9XHJcbn1cclxuIl19

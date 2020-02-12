@@ -1,3 +1,4 @@
-export * from './configurationFileLookup.js'
-export * from './resolveConfigOptionToAbsolutePath.js'
-export * from './Configuration.class.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _configurationFileLookup = require("./configurationFileLookup.js");Object.keys(_configurationFileLookup).forEach(function (key) {if (key === "default" || key === "__esModule") return;Object.defineProperty(exports, key, { enumerable: true, get: function () {return _configurationFileLookup[key];} });});
+var _resolveConfigOptionToAbsolutePath = require("./resolveConfigOptionToAbsolutePath.js");Object.keys(_resolveConfigOptionToAbsolutePath).forEach(function (key) {if (key === "default" || key === "__esModule") return;Object.defineProperty(exports, key, { enumerable: true, get: function () {return _resolveConfigOptionToAbsolutePath[key];} });});
+var _ConfigurationClass = require("./Configuration.class.js");Object.keys(_ConfigurationClass).forEach(function (key) {if (key === "default" || key === "__esModule") return;Object.defineProperty(exports, key, { enumerable: true, get: function () {return _ConfigurationClass[key];} });});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9zY3JpcHQuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjJFQUFBO0FBQ0E7QUFDQSIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vY29uZmlndXJhdGlvbkZpbGVMb29rdXAuanMnXHJcbmV4cG9ydCAqIGZyb20gJy4vcmVzb2x2ZUNvbmZpZ09wdGlvblRvQWJzb2x1dGVQYXRoLmpzJ1xyXG5leHBvcnQgKiBmcm9tICcuL0NvbmZpZ3VyYXRpb24uY2xhc3MuanMnXHJcbiJdfQ==
